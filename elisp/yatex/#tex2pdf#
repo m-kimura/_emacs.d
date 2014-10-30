@@ -1,0 +1,18 @@
+#!/bin/sh
+if [ -e $1 ]
+then
+    NAME=`basename $1 .tex`
+    platex $NAME.tex
+    dvipdfmx $NAME.dvi
+    if [ ! -e tmp ] ; then mkdir tmp; fi
+    if [ -e $NAME.aux ] ; then mv $NAME.aux ./tmp/; fi
+    if [ -e $NAME.dvi ] ; then mv $NAME.dvi ./tmp/; fi
+    if [ -e $NAME.log ] ; then mv $NAME.log ./tmp/; fi
+    if [ -e $NAME.nav ] ; then mv $NAME.nav ./tmp/; fi
+    if [ -e $NAME.out ] ; then mv $NAME.out ./tmp/; fi
+    if [ -e $NAME.snm ] ; then mv $NAME.snm ./tmp/; fi
+    if [ -e $NAME.toc ] ; then mv $NAME.toc ./tmp/; fi
+    if [ -e $NAME.vrb ] ; then mv $NAME.vrb ./tmp/; fi
+else
+    echo $1: No such file or directory
+fi
