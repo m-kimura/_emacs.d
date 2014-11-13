@@ -93,6 +93,51 @@
 
 
 
+;;C言語周り
+;インデント設定
+(add-hook 'c-mode-common-hook
+          '(lambda ()
+             ;; センテンスの終了である ';' を入力したら、自動改行+インデント
+             ;(c-toggle-auto-hungry-state 1)
+             ;; RET キーで自動改行+インデント
+             (define-key c-mode-base-map "\C-m" 'newline-and-indent)
+))
+
+;スペルチェッカ
+(add-hook 'c-mode-common-hook
+          '(lambda ()
+             ;; flyspell-prog-mode をオンにする
+             (flyspell-prog-mode)
+))
+
+;; C-c c で compile コマンドを呼び出す
+(define-key mode-specific-map "c" 'compile)
+;; C-c C-z で shell コマンドを呼び出す
+(define-key mode-specific-map "z" 'shell)
+;; Thanks to "http://www.namazu.org/~tsuchiya/elisp/#shell-command-with-completion"
+(shell-command-completion-mode)
+
+;;汎用機の SPF (mule みたいなやつ) には
+;;画面を 2 分割したときの 上下を入れ替える swap screen
+;;というのが PF 何番かにわりあてられていました。
+(defun swap-screen()
+  "Swap two screen,leaving cursor at current window."
+  (interactive)
+  (let ((thiswin (selected-window))
+        (nextbuf (window-buffer (next-window))))
+    (set-window-buffer (next-window) (window-buffer))
+    (set-window-buffer thiswin nextbuf)))
+(defun swap-screen-with-cursor()
+  "Swap two screen,with cursor in same buffer."
+  (interactive)
+  (let ((thiswin (selected-window))
+        (thisbuf (window-buffer)))
+    (other-window 1)
+    (set-window-buffer thiswin (window-buffer))
+    (set-window-buffer (selected-window) thisbuf)))
+(global-set-key [f2] 'swap-screen)
+(global-set-key [S-f2] 'swap-screen-with-cursor)
+
 
 ;; OSごとに異なる設定ファイルを読み込む
 ;;基本的には使わない
@@ -107,4 +152,5 @@
 ; ((string-match "mingw" system-configuration)        ;; Windows
 ;  (setq os-type 'win))
 )
+
 
