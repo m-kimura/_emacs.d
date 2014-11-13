@@ -5,20 +5,10 @@
 
 ;; LOAD-PATHとしてDropboxのelispディレクトリを読み込む
 (setq load-path (cons (concat dropbox-emacs-dir "/elisp") load-path))
- 
 
-;; OSごとに異なる設定ファイルを読み込む
-(cond 
- ((string-match "apple-darwin" system-configuration) ;; Mac
-  (load (concat dropbox-emacs-dir "/init-OSX")))
- ((string-match "linux" system-configuration)        ;; Linux
-  (load (concat dropbox-emacs-dir "/init-Linux")))
-; ((string-match "freebsd" system-configuration)      ;; FreeBSD
-;  (setq os-type 'bsd))
-; ((string-match "mingw" system-configuration)        ;; Windows
-;  (setq os-type 'win))
-)
 
+;;テーマの設定
+(load-theme 'deeper-blue t)
 
 ;;パッケージの追加
 (require 'package)
@@ -33,6 +23,25 @@
 
 ;pathを引き継ぐ
 (exec-path-from-shell-initialize)
+
+;; 行番号表示
+(require 'linum)
+(global-linum-mode)
+
+;自動改行のoff
+(setq text-mode-hook 'turn-off-auto-fill)
+
+;; ; マウスホイールの設定
+;; ;; マウスホイールでのスクロール速度の設定
+(setq mouse-wheel-scroll-amount '(3 ((shift) . 10) ((control) . nil)))
+;; ;; マウスホイールでのスクロールの加速をするかどうか
+(setq mouse-wheel-progressive-speed nil)
+
+;undo-tree
+(require 'undo-tree)
+(global-undo-tree-mode t)
+(global-set-key (kbd "M-/") 'undo-tree-redo)
+
 
 ;;auto-complete
 (require 'auto-complete)
@@ -81,3 +90,21 @@
 (setq bibtex-command "pbibtex")
 ;;RefTex
 (add-hook 'yatex-mode-hook 'turn-on-reftex)
+
+
+
+
+;; OSごとに異なる設定ファイルを読み込む
+;;基本的には使わない
+;;最後に上書き
+(cond 
+ ((string-match "apple-darwin" system-configuration) ;; Mac
+  (load (concat dropbox-emacs-dir "/init-OSX")))
+ ((string-match "linux" system-configuration)        ;; Linux
+  (load (concat dropbox-emacs-dir "/init-Linux")))
+; ((string-match "freebsd" system-configuration)      ;; FreeBSD
+;  (setq os-type 'bsd))
+; ((string-match "mingw" system-configuration)        ;; Windows
+;  (setq os-type 'win))
+)
+
